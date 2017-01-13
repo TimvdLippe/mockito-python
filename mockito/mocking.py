@@ -58,10 +58,11 @@ class Mock(TestDouble):
         self.verifying = False
         self.verification = None
         if mocked_obj is None:
-            mocked_obj = _Dummy()
-            strict = False
-        self.mocked_obj = mocked_obj
-        self.strict = strict
+            self.mocked_obj = _Dummy()
+            self.strict = False
+        else:
+            self.mocked_obj = mocked_obj
+            self.strict = strict
         self.stub_real_object = False
 
         mock_registry.register(self)
