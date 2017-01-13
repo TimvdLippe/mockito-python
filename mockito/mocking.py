@@ -57,9 +57,9 @@ class Mock(TestDouble):
         self.verifying = False
         self.verification = None
         if mocked_obj is None:
-            self.mocked_obj = _Dummy()
+            self.mocked_obj = None
             self.strict = False
-            self.stub_real_object = True
+            self.stub_real_object = False
         else:
             self.mocked_obj = mocked_obj
             self.strict = strict
