@@ -19,7 +19,6 @@
 # THE SOFTWARE.
 
 import inspect
-import warnings
 
 from . import invocation
 from . import signature
@@ -48,7 +47,7 @@ class RememberedInvocationBuilder(object):
 
 
 class Mock(TestDouble):
-    def __init__(self, mocked_obj=None, strict=True):
+    def __init__(self, mocked_obj=None, strict=True, stub=False):
         self.invocations = []
         self.stubbed_invocations = []
         self.original_methods = {}
@@ -60,10 +59,11 @@ class Mock(TestDouble):
         if mocked_obj is None:
             self.mocked_obj = _Dummy()
             self.strict = False
+            self.stub_real_object = True
         else:
             self.mocked_obj = mocked_obj
             self.strict = strict
-        self.stub_real_object = False
+            self.stub_real_object = stub
 
         mock_registry.register(self)
 
