@@ -158,6 +158,9 @@ def mock(config_or_spec=None, spec=None, strict=OMITTED):
                 remembered_invocation_builder, theMock, method_name)
 
 
+    if spec:
+        Dummy.__name__ = 'Dummy' + spec.__name__
+
     obj = Dummy()
     theMock = Mock(obj, strict=strict, spec=spec)
 
