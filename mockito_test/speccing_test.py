@@ -105,7 +105,7 @@ class TestSpeccing:
     def testHasANiceName(self):
         action = mock(Action)
 
-        assert 'DummyAction' in repr(action)
+        assert type(action).__name__ == 'DummyAction'
 
 class TestSpeccingLoose:
     def testReturnNoneForEveryMethod(self):
