@@ -2,6 +2,7 @@
 import pytest
 
 from mockito import when, args, kwargs, unstub
+from mockito.signature import signature
 
 from collections import namedtuple
 
@@ -471,14 +472,26 @@ class TestSignatures:
 
     class TestBuiltin:
 
-        def testBuiltinOpen(self):
+        def testEnsureForBuiltinsThatWeDontThrow(self):
             try:
                 import builtins
             except ImportError:
                 import __builtin__ as builtins
 
+            with pytest.raises(Exception):
+                signature(builtins.open)
             try:
                 when(builtins).open('foo')
             finally:  # just to be sure
                 unstub()
+
+
+    class TestEqualityToMockedFunction:
+        def testEnsureOldAndMockedFunctionsHaveSameSignature(self, sut):
+            old = sut.combination
+            when(sut).combination(Ellipsis)
+            new = sut.combination
+
+            assert signature(old) == signature(new)
+            assert "combination" in repr(new)
 

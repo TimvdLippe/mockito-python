@@ -82,10 +82,24 @@ class Mock(object):
             return remembered_invocation_builder(
                 self, method_name, *args, **kwargs)
 
-        if isinstance(original_method, staticmethod):
-            new_mocked_method = staticmethod(new_mocked_method)
-        elif isinstance(original_method, classmethod):
-            new_mocked_method = classmethod(new_mocked_method)
+
+        if isinstance(original_method, (staticmethod, classmethod)):
+            new_mocked_method = functools.wraps(
+                original_method.__func__)(new_mocked_method)
+            new_mocked_method.__wrapped__ = original_method.__func__
+
+            if isinstance(original_method, staticmethod):
+                new_mocked_method = staticmethod(new_mocked_method)
+            elif isinstance(original_method, classmethod):
+                new_mocked_method = classmethod(new_mocked_method)
+
+        elif original_method:
+            new_mocked_method = functools.wraps(
+                original_method)(new_mocked_method)
+            new_mocked_method.__wrapped__ = original_method
+        else:
+            new_mocked_method.__name__ = method_name
+
 
         self.set_method(method_name, new_mocked_method)
 
