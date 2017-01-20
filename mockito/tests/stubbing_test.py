@@ -21,7 +21,7 @@
 import pytest
 
 from .test_base import TestBase
-from mockito import mock, when, verify, times, any
+from mockito import mock, when, verify, times, any, unstub
 
 
 class TestEmptyMocks:
@@ -59,6 +59,24 @@ class TestEmptyMocks:
     def testCheckIsInstanceAgainstItself(self):
         dummy = mock()
         assert isinstance(dummy, dummy.__class__)
+
+    @pytest.mark.xfail
+    def testAfterUnstubReadyToGoAgain(self):
+        dummy = mock()
+
+        assert dummy.foo(1) is None
+        verify(dummy).foo(1)
+
+        unstub()
+
+        assert dummy.foo(1) is None
+        verify(dummy).foo(1)
+
+        # The case here is that dummy is bound to its mock on creation time.
+        # When we unstub, the registry looses its knowledge about dummy; hence
+        # a subsequent verify(dummy) call creates a new mock and registers
+        # (dummy -> newMock). Now dummy's bound mock and this newMock are out
+        # of sync.
 
 
 class TestStrictEmptyMocks:
