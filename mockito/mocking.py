@@ -23,7 +23,6 @@ import inspect
 import functools
 
 from . import invocation
-from . import signature
 from .mock_registry import mock_registry
 
 
@@ -50,7 +49,6 @@ class Mock(object):
         self.stubbed_invocations = deque()
 
         self.original_methods = {}
-        self._signatures_store = {}
 
     def remember(self, invocation):
         self.invocations.appendleft(invocation)
@@ -130,17 +128,6 @@ class Mock(object):
             return hasattr(self.spec, method_name)
         else:
             return True
-
-    def get_signature(self, method_name):
-        if self.spec is None:
-            return None
-
-        try:
-            return self._signatures_store[method_name]
-        except KeyError:
-            sig = signature.get_signature(self.spec, method_name)
-            self._signatures_store[method_name] = sig
-            return sig
 
 
 class _OMITTED(object):

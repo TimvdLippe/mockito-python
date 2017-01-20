@@ -54,7 +54,11 @@ class Invocation(object):
         return "%s(%s)" % (self.method_name, params)
 
     def ensure_signature_matches(self, method_name, args, kwargs):
-        sig = self.mock.get_signature(method_name)
+        spec = self.mock.spec
+        if not spec:
+            return
+
+        sig = signature.get_signature(spec, method_name)
         if not sig:
             return
 
